@@ -1,0 +1,140 @@
+# Task 5.1 (DeckManager.py)
+
+def createJokerDeck(self):
+    jokerImages = self.loadJokerImages()
+    deckJokers = []
+
+    priceMap = {
+        "The Joker" : 4,
+        "Micheal Myers" : 6,
+        "Fibonacci" : 5,
+        "Gauntlet" : 5,
+        "Ogre" : 5,
+        "Straw Hat" : 5,
+        "Hog Rider" : 4,
+        "? Block " : 5,
+        "Hogwarts" : 6,
+        "802" : 6
+    }
+
+    for name, image in jokerImages.items():
+        price = priceMap.get(name, 5)
+        sellPrice = max(2, price // 2)
+
+        joker = Jokers(name=name, description="Joker Card", image=image)
+        joker.price = price
+        joker._sell_price = sellPrice
+        deckJokers.append(joker)
+
+    return deckJokers
+
+# Task 5.2 (GameState.py)
+
+owned = set(self.playerJokers)
+
+if "The Joker" in owned:
+    self.mult += 4
+    self.activated_jokers.add("The Joker")
+
+if "Micheal Myers" in owned:
+    self.mult += random.randint(0, 23)
+    self.activated_jokers.add("Micheal Myers")
+
+if "Fibonacci" in owned:
+    fib_ranks = {"A", "2", "3", "5", "8"}
+    for card in self.current_hand:
+        if card.rank in fib_ranks:
+            self.mult += 8
+    self.activated_jokers.add("Fibonacci")
+
+if "Gauntlet" in owned:
+    self.chips += 250
+    self.hand_size -= 2
+    self.activated_jokers.add("Gauntlet")
+
+if "Ogre" in owned:
+    self.mult += 3 * len(owned)
+    self.activated_jokers.add("Ogre")
+
+if "Straw Hat" in owned:
+    self.chips += 100
+    self.chips -= 5 * self.hands_played
+    self.activated_jokers.add("Straw Hat")
+
+if "Hog Rider" in owned:
+    if self.is_straight(self.current_hand):
+        self.chips += 100
+    self.activated_jokers.add("Hog Rider")
+
+if "? Block" in owned:
+    if len(self.current_hand) == 4:
+        self.chips += 4
+    self.activated_jokers.add("? Block")
+
+if "Hogwarts" in owned:
+    for card in self.current_hand:
+        if card.rank == "A":
+            self.mult += 4
+            self.chips += 20
+    self.activated_jokers.add("Hogwarts")
+
+if "802" in owned:
+    if self.remaining_hands == 0:
+        self.mult *= 2
+        self.chips *= 2
+    self.activated_jokers.add("802")
+
+# Task 7 (GameState.py)
+
+def calculate_gold_reward(self, playerInfo, stage=0):
+    if stage == 0:
+        blind_type = playerInfo.blind_type
+        if blind_type == "Small":
+            base = 4
+        elif blind_type == "Big":
+            base = 8
+        elif blind_type == "Boss":
+            base = 10
+        else:
+            base = 0
+        return base + self.calculate_gold_reward(playerInfo, stage=1)
+    score = playerInfo.score
+    target = playerInfo.target_score
+    if score <= target:
+        return 0
+    STEP_AMOUNT = 10
+    if (score - target) >= STEP_AMOUNT:
+        playerInfo.score -= STEP_AMOUNT
+        return 1 + self.calculate_gold_reward(playerInfo, stage=1)
+    return 0
+
+# Task 9.1 (LevelSelectState.py)
+
+boss_abilities = {
+    "The Mark" : "All Face cards are drawn face down",
+    "The Needle" : "Play only 1 hand",
+    "The House" : "First hand is drawn face down",
+    "The Hook Discards" : "2 random cards held in hand after every played hand",
+    "The Water" : "Start with 0 discards",
+    "The Manacle" : "-1 hand size"
+}
+
+# Task 9.2 (LevelSelectState.py)
+
+lm.curSubLevel = nxt
+boss = self.currentBoss
+default_hand_limit = self.playerInfo.defaultHandLimit
+default_discard_limit = self.playerInfo.defaultDiscardLimit
+default_hand_size = self.playerInfo.defaultHandSize
+self.playerInfo.handLimit = default_hand_limit
+self.playerInfo.discardLimit = default_discard_limit
+self.playerInfo.handSize = default_hand_size
+if boss == "The Needle":
+    self.playerInfo.handLimit = 1
+
+elif boss == "The Water":
+    self.playerInfo.discardLimit = 0
+
+elif boss == "The Manacle":
+    self.playerInfo.handSize = max(1, self.playerInfo.handSize - 1)
+self.playerInfo.roundScore = 0
