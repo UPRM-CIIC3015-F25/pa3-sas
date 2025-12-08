@@ -1,0 +1,30 @@
+# Task 9.1 (LevelSelectState.py)
+
+boss_abilities = {
+    "The Mark" : "All Face cards are drawn face down",
+    "The Needle" : "Play only 1 hand",
+    "The House" : "First hand is drawn face down",
+    "The Hook Discards" : "2 random cards held in hand after every played hand",
+    "The Water" : "Start with 0 discards",
+    "The Manacle" : "-1 hand size"
+}
+
+# Task 9.2 (LevelSelectState.py)
+
+lm.curSubLevel = nxt
+boss = self.currentBoss
+default_hand_limit = self.playerInfo.defaultHandLimit
+default_discard_limit = self.playerInfo.defaultDiscardLimit
+default_hand_size = self.playerInfo.defaultHandSize
+self.playerInfo.handLimit = default_hand_limit
+self.playerInfo.discardLimit = default_discard_limit
+self.playerInfo.handSize = default_hand_size
+if boss == "The Needle":
+    self.playerInfo.handLimit = 1
+
+elif boss == "The Water":
+    self.playerInfo.discardLimit = 0
+
+elif boss == "The Manacle":
+    self.playerInfo.handSize = max(1, self.playerInfo.handSize - 1)
+self.playerInfo.roundScore = 0
