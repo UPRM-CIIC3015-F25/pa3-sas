@@ -20,9 +20,8 @@ class LevelManager():
     #   Each level should include a Small, Big, and Boss Blind, with Boss Blinds assigned unique names.
     #   Organize them in a dictionary structure where each key represents a level number.
 
-    def create_levels():
+    def create_levels(self):
         levelsDict = {}
-
         boss_names = [
             "The Mark",
             "The Needle",
@@ -32,14 +31,14 @@ class LevelManager():
             "The Manacle"
         ]
 
-        for i in range(6):
-            small = Sublevel("Small Blind", False)
-            big = Sublevel("Big Blind", False)
-            boss = Sublevel("Boss Blind", True, boss_names[i])
-
-            levelsDict[i + 1] = [small, big, boss]
+        for i, boss in enumerate(boss_names, start=1):
+            small = SubLevel(Blind.SMALL, i)
+            big = SubLevel(Blind.BIG, i)
+            boss_blind = SubLevel(Blind.BOSS, i, boss)
+            levelsDict[i] = [small, big, boss_blind]
 
         return levelsDict
+
 
     def setUpLevels(self): # Sets up all levels and sublevels
         self.levelsDict[1] = [SubLevel(Blind.SMALL, 1), SubLevel(Blind.BIG, 1), SubLevel(Blind.BOSS, 1, "The Water")]
@@ -80,5 +79,14 @@ class LevelManager():
     #   It should check each sublevel in order and return the first one that isn’t finished.
     #   Stop once all have been checked or one is found. Avoid using loops. (USE RECURSIONS)
     def next_unfinished_sublevel(self, index=0):
-        return None
-    
+        if index >= len(self.curLevel):
+            return None
+
+        sublevel = self.curLevel[index]
+
+        # Si este sublevel no se ha terminado, es el próximo
+        if not sublevel.finished:
+            return sublevel
+
+        # Si este ya está terminado, seguimos con el próximo (recursión)
+        return self.next_unfinished_sublevel(index + 1)
