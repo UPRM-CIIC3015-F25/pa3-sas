@@ -162,7 +162,6 @@ class DeckManager:
         jokerImages = self.loadJokerImages()
         deckJokers = []
 
-        #TODO (TASK 5.1): Complete the priceMap variable by assigning each joker a price.
         priceMap = {
             "Fibonacci": 6,
             "Michael Myers": 8,
