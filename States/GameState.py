@@ -553,6 +553,32 @@ class GameState(State):
     #   Create a 'suitOrder' list (Hearts, Clubs, Diamonds, Spades), then use nested loops to compare each card
     #   with the ones after it. Depending on the mode, sort by rank first or suit first, swapping cards when needed
     #   until the entire hand is ordered correctly.
+
+    def sortHand(self, mode):
+        suitOrder = ["hearts", "clubs", "diamonds", "spades"]
+
+        for i in range(len(self.hand)):
+            for j in range(i + 1, len(self.hand)):
+                c1 = self.hand[i]
+                c2 = self.hand[j]
+
+                if mode == "rank":
+                    if c1.rank.value > c2.rank.value:
+                        self.hand[i], self.hand[j] = self.hand[j], self.hand[i]
+
+                else:
+                    s1 = suitOrder.index(c1.suit)
+                    s2 = suitOrder.index(c2.suit)
+
+                    if s1 > s2:
+                        self.hand[i], self.hand[j] = self.hand[j], self.hand[i]
+
+                    elif s1 == s2:
+                        if c1.rank.value > c2.rank.value:
+                            self.hand[i], self.hand[j] = self.hand[j], self.hand[i]
+
+        self.updateCards(400, 520, self.cards, self.hand, scale=1.2)
+
     def SortCards(self, sort_by: str = "suit"):
         suitOrder = [Suit.HEARTS, Suit.CLUBS, Suit.DIAMONDS, Suit.SPADES]         # Define the order of suits
         self.updateCards(400, 520, self.cards, self.hand, scale=1.2)
@@ -816,5 +842,28 @@ class GameState(State):
     #   iterations (no for/while loops) — the recursion itself must handle repetition. After the
     #   recursion finishes, reset card selections, clear any display text or tracking lists, and
     #   update the visual layout of the player's hand.
+
+    def discard_and_draw(hand):
+        selected = get_selected_cards()
+        if not selected:
+            return refill_hand(hand)
+
+        card_to_remove = selected[0]
+        remove_card_from_hand(card_to_remove)
+
+        return discard_and_draw(hand)
+
+    def refill_hand(hand):
+        if len(hand) >= 8:
+            clear_selection()
+            display_message("")
+            update_hand_layout()
+            return hand
+
+        new_card = draw_card()
+        hand.append(new_card)
+
+        return refill_hand(hand)
+
     def discardCards(self, removeFromHand: bool):
         self.updateCards(400, 520, self.cards, self.hand, scale=1.2)
