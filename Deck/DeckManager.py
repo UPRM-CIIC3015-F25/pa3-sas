@@ -162,11 +162,22 @@ class DeckManager:
         jokerImages = self.loadJokerImages()
         deckJokers = []
 
+        #TODO (TASK 5.1): Complete the priceMap variable by assigning each joker a price.
         priceMap = {
+            "Fibonacci": 6,
+            "Michael Myers": 8,
+            "? Block": 5,
+            "Hogwarts": 10,
+            "StrawHat": 7,
+            "802": 4,
+            "Ogre": 9,
+            "Hog Rider": 6,
+            "Gauntlet": 12,
+            "The Joker": 15
         }
 
         for name, image in jokerImages.items():
-            price = priceMap.get(name, 5)
+            price = priceMap.get(name, 5)  # Default price if missing
             sellPrice = max(2, price // 2)
 
             joker = Jokers(name=name, description="Joker Card", image=image)
